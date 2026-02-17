@@ -70,9 +70,8 @@ function DashboardShell({ children }) {
         >
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="btn btn-ghost"
-            style={{ display: 'none' }}
-            id="mobile-menu-btn"
+            className="btn btn-ghost mobile-only"
+            aria-label="Toggle menu"
           >
             <svg
               width="20"
@@ -87,12 +86,12 @@ function DashboardShell({ children }) {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <div />
+          <div className="desktop-only" />
           <div
             style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}
           >
             <span
-              className="text-mono"
+              className="text-mono desktop-only"
               style={{ color: 'var(--color-text-muted)', fontSize: '0.7rem' }}
             >
               {user.department?.name || '—'}
@@ -120,14 +119,6 @@ function DashboardShell({ children }) {
         {/* Page content */}
         <div style={{ padding: 'var(--spacing-page)' }}>{children}</div>
       </main>
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          #mobile-menu-btn {
-            display: flex !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

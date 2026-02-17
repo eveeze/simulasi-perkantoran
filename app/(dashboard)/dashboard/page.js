@@ -179,13 +179,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Two-column layout */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '1.5rem',
-        }}
-      >
+      <div className="dashboard-grid">
         {/* Recent Attendance */}
         <div className="card" style={{ overflow: 'hidden', padding: 0 }}>
           <div
@@ -230,12 +224,15 @@ export default function DashboardPage() {
                     alignItems: 'center',
                   }}
                 >
-                  <div>
+                  <div style={{ minWidth: 0 }}>
                     <div
                       style={{
                         fontSize: 'var(--font-size-sm)',
                         fontWeight: 500,
                         marginBottom: '0.125rem',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                       }}
                     >
                       {att.employee?.name || '—'}
@@ -311,6 +308,9 @@ export default function DashboardPage() {
                       style={{
                         fontSize: 'var(--font-size-sm)',
                         fontWeight: 500,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                       }}
                     >
                       {leave.employee?.name || '—'}
@@ -331,6 +331,9 @@ export default function DashboardPage() {
                       color: 'var(--color-text-secondary)',
                       fontSize: 'var(--font-size-xs)',
                       marginTop: '0.25rem',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
                     }}
                   >
                     {leave.reason}
@@ -343,9 +346,15 @@ export default function DashboardPage() {
       </div>
 
       <style jsx>{`
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.5rem;
+        }
         @media (max-width: 768px) {
-          div[style*='grid-template-columns: 1fr 1fr'] {
-            grid-template-columns: 1fr !important;
+          .dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
           }
         }
       `}</style>

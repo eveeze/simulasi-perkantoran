@@ -522,7 +522,26 @@ select.input {
 }
 
 /* ── Responsive ── */
+
+/* Utility classes for responsive show/hide */
+.mobile-only {
+  display: none !important;
+}
+
+.desktop-only {
+  display: flex !important;
+}
+
 @media (max-width: 768px) {
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Sidebar: slide in from left on mobile */
   .sidebar {
     transform: translateX(-100%);
   }
@@ -533,6 +552,100 @@ select.input {
 
   .main-content {
     margin-left: 0 !important;
+  }
+
+  /* Modal: bottom sheet style on mobile */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-content {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-width: 100%;
+    max-height: 85vh;
+    padding: 1.5rem;
+    animation: slideUp 0.3s var(--ease-out-expo) both;
+  }
+
+  /* Stats grid: 2 columns on mobile */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem;
+  }
+
+  /* Card: smaller padding on mobile */
+  .card {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  /* Table: improve mobile readability */
+  .table th,
+  .table td {
+    padding: 0.625rem 0.75rem;
+    font-size: var(--font-size-xs);
+  }
+
+  .table th {
+    font-size: 0.6rem;
+  }
+
+  /* Buttons: full-width on very small screens */
+  .btn-lg {
+    padding: 0.875rem 1.5rem;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Badge: slightly smaller on mobile */
+  .badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* Form inputs: taller touch targets */
+  .input {
+    padding: 0.875rem 1rem;
+    font-size: var(--font-size-base);
+  }
+
+  /* Empty state: less padding on mobile */
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+
+  /* Frontoffice main: less padding */
+  .frontoffice-main {
+    padding: 1.5rem var(--spacing-page) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Stats grid: single column on very small screens */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Even smaller table text */
+  .table th,
+  .table td {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.65rem;
+  }
+
+  .text-mono {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

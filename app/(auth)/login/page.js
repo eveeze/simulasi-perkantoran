@@ -36,23 +36,9 @@ export default function LoginPage() {
   ];
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-      }}
-    >
+    <div className="login-page">
       {/* Left — Branding */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: 'var(--spacing-page)',
-          borderRight: '1px solid var(--color-border)',
-        }}
-      >
+      <div className="login-branding">
         <Link
           href="/"
           style={{
@@ -117,14 +103,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right — Form */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 'var(--spacing-page)',
-        }}
-      >
+      <div className="login-form-section">
         <div
           className="animate-fade-in animate-delay-2"
           style={{ width: '100%', maxWidth: '380px' }}
@@ -240,11 +219,42 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Responsive: stack on mobile */}
       <style jsx>{`
+        .login-page {
+          min-height: 100vh;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .login-branding {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: var(--spacing-page);
+          border-right: 1px solid var(--color-border);
+        }
+
+        .login-form-section {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: var(--spacing-page);
+        }
+
         @media (max-width: 768px) {
-          div:first-child {
-            grid-template-columns: 1fr !important;
+          .login-page {
+            grid-template-columns: 1fr;
+          }
+
+          .login-branding {
+            border-right: none;
+            border-bottom: 1px solid var(--color-border);
+            padding: 1.5rem var(--spacing-page);
+            gap: 1.5rem;
+          }
+
+          .login-form-section {
+            padding: 2rem var(--spacing-page);
           }
         }
       `}</style>

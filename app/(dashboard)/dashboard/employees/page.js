@@ -265,14 +265,7 @@ export default function EmployeesPage() {
               {...(!editingEmployee && { required: true })}
             />
           </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-              marginBottom: '1.5rem',
-            }}
-          >
+          <div className="form-grid-2col">
             <div>
               <label className="input-label">Peran</label>
               <select
@@ -313,6 +306,19 @@ export default function EmployeesPage() {
           </button>
         </form>
       </Modal>
+      <style jsx>{`
+        .form-grid-2col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+        }
+        @media (max-width: 480px) {
+          .form-grid-2col {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </div>
   );
 }

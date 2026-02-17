@@ -172,7 +172,7 @@ export default function CorrespondencePage() {
                   flexWrap: 'wrap',
                 }}
               >
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
                       display: 'flex',
@@ -214,7 +214,7 @@ export default function CorrespondencePage() {
                     </p>
                   )}
                 </div>
-                <div style={{ textAlign: 'right', minWidth: '150px' }}>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <div
                     className="text-mono"
                     style={{
