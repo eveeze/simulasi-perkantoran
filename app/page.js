@@ -1,65 +1,249 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
+export default function HomePage() {
+  const [time, setTime] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const updateTime = () => {
+      const now = new Date();
+      setTime(
+        now.toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        }),
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Nav */}
+      <nav
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1.5rem var(--spacing-page)',
+          borderBottom: '1px solid var(--color-border)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: 'var(--color-accent)',
+            }}
+          />
+          <span
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 600,
+              fontSize: 'var(--font-size-sm)',
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+            }}
+          >
+            SimKantor
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <Link href="/frontoffice" className="btn btn-ghost">
+            Front Office
+          </Link>
+          <Link href="/login" className="btn btn-primary">
+            Masuk
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <main
+        style={{
+          flex: 1,
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          padding: '0 var(--spacing-page)',
+        }}
+      >
+        <section
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            minHeight: 'calc(100vh - 80px)',
+            maxWidth: '1400px',
+          }}
+        >
+          {/* Top label */}
+          <div
+            className="animate-fade-in"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '2rem',
+            }}
+          >
+            <span className="badge badge-accent">v1.0</span>
+            <span
+              className="text-mono"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
+              Simulasi Perkantoran Digital
+            </span>
+          </div>
+
+          {/* Big headline */}
+          <h1
+            className="text-display animate-fade-in animate-delay-1"
+            style={{
+              marginBottom: '2rem',
+              maxWidth: '900px',
+            }}
+          >
+            Kantor
+            <br />
+            <span style={{ color: 'var(--color-accent)' }}>Virtual</span>
+            <span style={{ color: 'var(--color-text-muted)' }}>.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          {/* Description */}
+          <p
+            className="animate-fade-in animate-delay-2"
+            style={{
+              fontSize: 'var(--font-size-lg)',
+              color: 'var(--color-text-secondary)',
+              maxWidth: '540px',
+              lineHeight: 1.7,
+              marginBottom: '3rem',
+            }}
+          >
+            Platform simulasi perkantoran modern dengan sistem presensi
+            biometrik, manajemen cuti, kearsipan digital, dan dashboard
+            multi-peran — dibangun untuk mempersiapkan tenaga administratif masa
+            depan.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          {/* CTA row */}
+          <div
+            className="animate-fade-in animate-delay-3"
+            style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <Link href="/login" className="btn btn-primary btn-lg">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" y1="12" x2="3" y2="12" />
+              </svg>
+              Masuk Dashboard
+            </Link>
+            <Link href="/frontoffice" className="btn btn-secondary btn-lg">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M12 2a10 10 0 1 0 10 10H12V2z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              Face ID Scanner
+            </Link>
+          </div>
+
+          {/* Stats row */}
+          <div
+            className="animate-fade-in animate-delay-4"
+            style={{
+              display: 'flex',
+              gap: '3rem',
+              marginTop: '5rem',
+              flexWrap: 'wrap',
+            }}
           >
-            Documentation
-          </a>
-        </div>
+            {[
+              { label: 'Departemen', value: '4' },
+              { label: 'Peran Aktif', value: '5' },
+              { label: 'Modul', value: '6' },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '2.5rem',
+                    fontWeight: 700,
+                    lineHeight: 1,
+                  }}
+                >
+                  {stat.value}
+                </div>
+                <div
+                  className="text-mono"
+                  style={{
+                    color: 'var(--color-text-muted)',
+                    marginTop: '0.25rem',
+                  }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
+
+      {/* Footer bar */}
+      <footer
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1.5rem var(--spacing-page)',
+          borderTop: '1px solid var(--color-border)',
+        }}
+      >
+        <span
+          className="text-mono"
+          style={{ color: 'var(--color-text-muted)' }}
+        >
+          SimKantor © 2026
+        </span>
+        <span
+          className="text-mono"
+          style={{ color: 'var(--color-text-muted)' }}
+        >
+          {time} WIB
+        </span>
+      </footer>
     </div>
   );
 }
