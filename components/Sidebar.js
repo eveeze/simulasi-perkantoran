@@ -9,6 +9,7 @@ const roleLabels = {
   MANAGER: 'Manajer',
   SECRETARY: 'Sekretaris',
   STAFF: 'Staf',
+  FRONT_OFFICE: 'Front Office',
 };
 
 function NavIcon({ name }) {
@@ -111,6 +112,19 @@ function NavIcon({ name }) {
         <line x1="21" y1="12" x2="9" y2="12" />
       </svg>
     ),
+    faceRegister: (
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        <path d="M12 2a10 10 0 1 0 10 10H12V2z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    ),
   };
   return icons[name] || null;
 }
@@ -120,21 +134,40 @@ export default function Sidebar({ isOpen, onClose }) {
   const { user, logout } = useAuth();
 
   const getNavItems = () => {
+    const role = user?.role;
+
+    // FRONT_OFFICE only sees Dashboard and Kehadiran
+    if (role === 'FRONT_OFFICE') {
+      return [
+        { href: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+        {
+          href: '/dashboard/attendance',
+          label: 'Kehadiran',
+          icon: 'attendance',
+        },
+      ];
+    }
+
     const items = [
       { href: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
       { href: '/dashboard/attendance', label: 'Kehadiran', icon: 'attendance' },
       { href: '/dashboard/leave', label: 'Cuti', icon: 'leave' },
     ];
 
-    if (user?.role === 'ADMIN') {
+    if (role === 'ADMIN') {
       items.push({
         href: '/dashboard/employees',
         label: 'Karyawan',
         icon: 'employees',
       });
+      items.push({
+        href: '/dashboard/face-register',
+        label: 'Registrasi Wajah',
+        icon: 'faceRegister',
+      });
     }
 
-    if (['ADMIN', 'SECRETARY', 'MANAGER'].includes(user?.role)) {
+    if (['ADMIN', 'SECRETARY', 'MANAGER'].includes(role)) {
       items.push({
         href: '/dashboard/correspondence',
         label: 'Korespondensi',

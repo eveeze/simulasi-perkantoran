@@ -33,6 +33,7 @@ export default function LoginPage() {
     { label: 'Manager', email: 'manager@office.sim' },
     { label: 'Secretary', email: 'secretary@office.sim' },
     { label: 'Staff', email: 'staff@office.sim' },
+    { label: 'Front Office', email: 'frontoffice@office.sim' },
   ];
 
   return (

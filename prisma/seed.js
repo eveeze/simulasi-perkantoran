@@ -94,6 +94,17 @@ async function main() {
         departmentId: departments[3].id,
       },
     }),
+    prisma.employee.upsert({
+      where: { email: 'frontoffice@office.sim' },
+      update: {},
+      create: {
+        name: 'Fitri Rahayu',
+        email: 'frontoffice@office.sim',
+        password: hashedPassword,
+        role: 'FRONT_OFFICE',
+        departmentId: departments[0].id,
+      },
+    }),
   ]);
 
   console.log(`✅ Created ${employees.length} employees`);
@@ -215,11 +226,12 @@ async function main() {
   console.log('✅ Created sample documents');
   console.log('\n🎉 Seed completed!');
   console.log('\n📋 Demo Accounts:');
-  console.log('   Admin:     admin@office.sim / password123');
-  console.log('   Manager:   manager@office.sim / password123');
-  console.log('   Secretary: secretary@office.sim / password123');
-  console.log('   Staff:     staff@office.sim / password123');
-  console.log('   Staff 2:   staff2@office.sim / password123');
+  console.log('   Admin:        admin@office.sim / password123');
+  console.log('   Manager:      manager@office.sim / password123');
+  console.log('   Secretary:    secretary@office.sim / password123');
+  console.log('   Staff:        staff@office.sim / password123');
+  console.log('   Staff 2:      staff2@office.sim / password123');
+  console.log('   Front Office: frontoffice@office.sim / password123');
 }
 
 main()

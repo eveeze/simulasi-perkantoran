@@ -11,6 +11,7 @@ enum Role {
   MANAGER
   SECRETARY
   STAFF
+  FRONT_OFFICE
 }
 
 enum AttendanceStatus {

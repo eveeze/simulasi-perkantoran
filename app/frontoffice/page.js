@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -16,97 +16,56 @@ const FaceScanner = dynamic(() => import('@/components/FaceScanner'), {
 });
 
 export default function FrontOfficePage() {
-  const [mode, setMode] = useState('verify'); // verify | register
   const [result, setResult] = useState(null);
-  const [employees, setEmployees] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState('');
   const [processing, setProcessing] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/employees')
-      .then((r) => r.json())
-      .then((data) => setEmployees(Array.isArray(data) ? data : []))
-      .catch(() => {});
-  }, []);
+  const handleDescriptor = useCallback(async (descriptor) => {
+    setProcessing(true);
+    setResult(null);
 
-  const handleDescriptor = useCallback(
-    async (descriptor) => {
-      setProcessing(true);
-      setResult(null);
+    try {
+      // Step 1: Verify face
+      const verifyRes = await fetch('/api/face/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ descriptor }),
+      });
+      const verifyData = await verifyRes.json();
 
-      try {
-        if (mode === 'verify') {
-          // Step 1: Verify face
-          const verifyRes = await fetch('/api/face/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ descriptor }),
-          });
-          const verifyData = await verifyRes.json();
-
-          if (!verifyData.matched) {
-            setResult({
-              type: 'error',
-              message: verifyData.message || 'Wajah tidak dikenali.',
-            });
-            return;
-          }
-
-          // Step 2: Auto check-in/out
-          const checkRes = await fetch('/api/attendance/check', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ employeeId: verifyData.employee.id }),
-          });
-          const checkData = await checkRes.json();
-
-          setResult({
-            type: 'success',
-            message: checkData.message,
-            employee: verifyData.employee,
-            action: checkData.action,
-            distance: verifyData.distance,
-          });
-        } else {
-          // Register mode
-          if (!selectedEmployee) {
-            setResult({
-              type: 'error',
-              message: 'Pilih karyawan terlebih dahulu.',
-            });
-            return;
-          }
-
-          const res = await fetch('/api/face/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ employeeId: selectedEmployee, descriptor }),
-          });
-          const data = await res.json();
-
-          if (res.ok) {
-            setResult({
-              type: 'success',
-              message: data.message || 'Wajah berhasil didaftarkan!',
-            });
-          } else {
-            setResult({
-              type: 'error',
-              message: data.error || 'Gagal mendaftarkan wajah.',
-            });
-          }
-        }
-      } catch (err) {
+      if (!verifyData.matched) {
         setResult({
           type: 'error',
-          message: 'Terjadi kesalahan. Coba lagi.',
+          message:
+            verifyData.message ||
+            'Wajah tidak dikenali. Hubungi Admin untuk mendaftarkan wajah Anda.',
         });
-      } finally {
-        setProcessing(false);
+        return;
       }
-    },
-    [mode, selectedEmployee],
-  );
+
+      // Step 2: Auto check-in/out
+      const checkRes = await fetch('/api/attendance/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ employeeId: verifyData.employee.id }),
+      });
+      const checkData = await checkRes.json();
+
+      setResult({
+        type: 'success',
+        message: checkData.message,
+        employee: verifyData.employee,
+        action: checkData.action,
+        distance: verifyData.distance,
+      });
+    } catch (err) {
+      setResult({
+        type: 'error',
+        message: 'Terjadi kesalahan. Coba lagi.',
+      });
+    } finally {
+      setProcessing(false);
+    }
+  }, []);
 
   return (
     <div
@@ -187,7 +146,7 @@ export default function FrontOfficePage() {
           style={{
             color: 'var(--color-text-secondary)',
             textAlign: 'center',
-            marginBottom: '2rem',
+            marginBottom: '2.5rem',
             maxWidth: '420px',
           }}
         >
@@ -195,60 +154,12 @@ export default function FrontOfficePage() {
           kamera untuk absen masuk atau pulang.
         </p>
 
-        {/* Mode toggle */}
+        {/* Face scanner — verify only */}
         <div
           className="animate-fade-in animate-delay-2"
-          style={{
-            display: 'flex',
-            gap: '0.5rem',
-            marginBottom: '2rem',
-            background: 'var(--color-surface)',
-            padding: '0.25rem',
-            borderRadius: 'var(--radius-md)',
-          }}
-        >
-          <button
-            className={`btn btn-sm ${mode === 'verify' ? 'btn-primary' : 'btn-ghost'}`}
-            onClick={() => setMode('verify')}
-          >
-            Verifikasi
-          </button>
-          <button
-            className={`btn btn-sm ${mode === 'register' ? 'btn-primary' : 'btn-ghost'}`}
-            onClick={() => setMode('register')}
-          >
-            Registrasi
-          </button>
-        </div>
-
-        {/* Register: select employee */}
-        {mode === 'register' && (
-          <div
-            className="animate-fade-in"
-            style={{ marginBottom: '1.5rem', width: '100%', maxWidth: '640px' }}
-          >
-            <label className="input-label">Pilih Karyawan</label>
-            <select
-              className="input"
-              value={selectedEmployee}
-              onChange={(e) => setSelectedEmployee(e.target.value)}
-            >
-              <option value="">— Pilih karyawan —</option>
-              {employees.map((emp) => (
-                <option key={emp.id} value={emp.id}>
-                  {emp.name} ({emp.role})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Face scanner */}
-        <div
-          className="animate-fade-in animate-delay-3"
           style={{ width: '100%' }}
         >
-          <FaceScanner mode={mode} onDescriptorCaptured={handleDescriptor} />
+          <FaceScanner mode="verify" onDescriptorCaptured={handleDescriptor} />
         </div>
 
         {/* Processing */}
@@ -343,6 +254,33 @@ export default function FrontOfficePage() {
             )}
           </div>
         )}
+
+        {/* Help text */}
+        <div
+          className="animate-fade-in animate-delay-3"
+          style={{
+            marginTop: '2rem',
+            padding: '1rem 1.5rem',
+            borderRadius: 'var(--radius-md)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            maxWidth: '640px',
+            width: '100%',
+          }}
+        >
+          <p
+            className="text-mono"
+            style={{
+              fontSize: '0.7rem',
+              color: 'var(--color-text-muted)',
+              textAlign: 'center',
+            }}
+          >
+            Wajah belum terdaftar? Hubungi Administrator untuk mendaftarkan
+            wajah Anda melalui menu <strong>Registrasi Wajah</strong> di
+            dashboard.
+          </p>
+        </div>
       </main>
     </div>
   );

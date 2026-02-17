@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { authenticateRequest } from '@/lib/auth';
 
 export async function POST(request) {
   try {
+    // Only ADMIN can register faces
+    const auth = await authenticateRequest(request);
+    if (!auth || auth.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Hanya Admin yang dapat mendaftarkan wajah karyawan' },
+        { status: 403 },
+      );
+    }
+
     const { employeeId, descriptor } = await request.json();
 
     if (!employeeId || !descriptor || !Array.isArray(descriptor)) {
