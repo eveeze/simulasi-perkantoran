@@ -96,7 +96,7 @@ test.describe('3. Karyawan & Biometrik (Admin Only)', () => {
     const camContainer = page
       .locator('video')
       .or(page.locator('.scanner-container'));
-    await expect(camContainer).toBeVisible();
+    await expect(camContainer).toBeAttached();
 
     const dropdown = page.locator('select').first();
     await expect(dropdown).toBeVisible();

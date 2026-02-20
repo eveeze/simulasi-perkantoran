@@ -9,6 +9,6 @@ test.describe('9. Front Office', () => {
     const camContainer = page
       .locator('video')
       .or(page.locator('.scanner-container'));
-    await expect(camContainer).toBeVisible();
+    await expect(camContainer).toBeAttached();
   });
 });

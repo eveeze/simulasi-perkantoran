@@ -398,10 +398,14 @@ select.input {
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 50;
-  padding: 1rem;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-content {
@@ -411,8 +415,12 @@ select.input {
   padding: 2rem;
   max-width: 32rem;
   width: 100%;
-  max-height: 90vh;
+  margin: auto;
+  max-height: 85vh;
+  max-height: 85dvh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── Animations ── */
@@ -556,14 +564,17 @@ select.input {
 
   /* Modal: bottom sheet style on mobile */
   .modal-overlay {
-    align-items: flex-end;
+    align-items: center; /* or flex-end to push to bottom */
+    justify-content: flex-end; /* when flex-direction is column, flex-end pushes it to the bottom */
     padding: 0;
   }
 
   .modal-content {
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    margin: auto auto 0 auto;
     max-width: 100%;
     max-height: 85vh;
+    max-height: 85dvh;
     padding: 1.5rem;
     animation: slideUp 0.3s var(--ease-out-expo) both;
   }
