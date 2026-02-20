@@ -49,9 +49,7 @@ test.describe('5. Manajemen Cuti (Leave)', () => {
         .getByRole('cell', { name: 'Testing leave request automated' })
         .first(),
     ).toBeVisible();
-    await expect(
-      page.getByText('PENDING').or(page.getByText('Menunggu')),
-    ).toBeVisible();
+    await expect(page.getByText('PENDING').or(page.getByText('Menunggu')).first()).toBeVisible();
   });
 
   test('5.2 Approval Cuti (Admin)', async ({ page }) => {

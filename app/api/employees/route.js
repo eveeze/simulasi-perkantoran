@@ -2,8 +2,16 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { authenticateRequest } from '@/lib/auth';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request) {
   try {
+    const auth = await authenticateRequest(request);
+    if (!auth)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (auth.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
     const employees = await prisma.employee.findMany({
       select: {
         id: true,
@@ -11,6 +19,7 @@ export async function GET() {
         email: true,
         role: true,
         avatar: true,
+        faceDescriptor: true,
         departmentId: true,
         department: { select: { name: true } },
         createdAt: true,

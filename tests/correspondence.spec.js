@@ -15,6 +15,7 @@ test.describe('6. Korespondensi', () => {
 
     await expect(page.locator('table').first()).toBeVisible();
 
+    const docTitle = `Surat Test Playwright ${Date.now()}`;
     const createBtn = page.getByRole('button', { name: /buat surat/i });
     if (await createBtn.isVisible()) {
       await createBtn.click();
@@ -22,7 +23,7 @@ test.describe('6. Korespondensi', () => {
 
       await page
         .locator('input[placeholder="Perihal surat..."]')
-        .fill('Surat Test Playwright');
+        .fill(docTitle);
       await page.locator('select').first().selectOption('MEMO');
 
       await page
@@ -31,16 +32,11 @@ test.describe('6. Korespondensi', () => {
         .click();
 
       await expect(
-        page
-          .getByRole('cell', { name: 'Surat Test Playwright', exact: false })
-          .first(),
+        page.getByRole('cell', { name: docTitle, exact: false }).first(),
       ).toBeVisible();
     }
 
-    const row = page
-      .getByRole('row')
-      .filter({ hasText: 'Surat Test Playwright' })
-      .first();
+    const row = page.getByRole('row').filter({ hasText: docTitle }).first();
     const signBtn = row.getByRole('button', { name: /tanda tangan/i });
     if (await signBtn.isVisible()) {
       await signBtn.click();

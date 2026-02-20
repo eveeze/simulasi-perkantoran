@@ -28,14 +28,12 @@ test.describe('2. Dashboard & Navigation', () => {
     await expect(page.getByText(/Total Karyawan/i)).toBeVisible();
     await expect(page.getByText(/Hadir Hari Ini/i)).toBeVisible();
     await expect(page.getByText(/Terlambat/i)).toBeVisible();
-    await expect(page.getByText(/Cuti Pending/i)).toBeVisible();
+    await expect(page.getByText(/Cuti Pending/i).first()).toBeVisible();
 
     await expect(
       page.getByText(/Kehadiran Terkini/i, { exact: false }),
     ).toBeVisible();
-    await expect(
-      page.getByText(/Pengajuan Cuti Pending/i, { exact: false }),
-    ).toBeVisible();
+    await expect(page.getByText(/Pengajuan Cuti Pending/i, { exact: false }).first()).toBeVisible();
   });
 
   test('2.2 Sidebar Navigation - Admin', async ({ page }) => {

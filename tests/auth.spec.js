@@ -80,15 +80,9 @@ test.describe('1. Authentication & Layout', () => {
     await page.reload();
     await expect(page).toHaveURL('/dashboard');
 
-    const logoutBtn = page.getByRole('button', { name: /logout|keluar/i });
-    if ((await logoutBtn.count()) > 0) {
-      await logoutBtn.first().click();
-    } else {
-      await page
-        .getByText(/keluar/i)
-        .last()
-        .click();
-    }
+    await page
+      .getByRole('button', { name: /logout|keluar/i })
+      .evaluate((node) => node.click());
 
     await expect(page).toHaveURL(/.*\/login/);
 

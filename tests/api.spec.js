@@ -10,15 +10,8 @@ test.describe('10/11. Edge Cases & API Security', () => {
 
     await page.goto('/dashboard/admin');
 
-    const accessDenied = page.getByText(
-      /akses ditolak|forbidden|unauthorized/i,
-    );
-
-    if (page.url().includes('/dashboard/admin')) {
-      await expect(accessDenied).toBeVisible();
-    } else {
-      await expect(page).not.toHaveURL('/dashboard/admin');
-    }
+    const accessDenied = page.getByText(/Akses hanya untuk Admin/i);
+    await expect(accessDenied).toBeVisible();
   });
 
   test.describe('API Request Tests with Auth', () => {
@@ -28,8 +21,8 @@ test.describe('10/11. Edge Cases & API Security', () => {
     }) => {
       await page.goto('/login');
       await page.getByRole('button', { name: 'Staff', exact: true }).click();
-    await expect(page.locator('input[type="email"]')).not.toBeEmpty();
-    await page.getByRole('button', { name: /masuk/i, exact: true }).click();
+      await expect(page.locator('input[type="email"]')).not.toBeEmpty();
+      await page.getByRole('button', { name: /masuk/i, exact: true }).click();
       await expect(page).toHaveURL('/dashboard');
 
       const adminRes = await page.request.get('/api/admin');
@@ -61,8 +54,8 @@ test.describe('10/11. Edge Cases & API Security', () => {
     }) => {
       await page.goto('/login');
       await page.getByRole('button', { name: 'Admin', exact: true }).click();
-    await expect(page.locator('input[type="email"]')).not.toBeEmpty();
-    await page.getByRole('button', { name: /masuk/i, exact: true }).click();
+      await expect(page.locator('input[type="email"]')).not.toBeEmpty();
+      await page.getByRole('button', { name: /masuk/i, exact: true }).click();
       await expect(page).toHaveURL('/dashboard');
 
       const registerRes = await page.request.post('/api/face/register', {

@@ -61,6 +61,13 @@ export default function FaceRegisterPage() {
             type: 'success',
             message: data.message || 'Wajah berhasil didaftarkan!',
           });
+          setEmployees((prev) =>
+            prev.map((emp) =>
+              emp.id === selectedEmployee
+                ? { ...emp, faceDescriptor: [1] }
+                : emp,
+            ),
+          );
         } else {
           setResult({
             type: 'error',
