@@ -19,6 +19,8 @@ export default function Modal({ isOpen, onClose, title, children }) {
   return (
     <div
       className="modal-overlay"
+      role="dialog"
+      aria-modal="true"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

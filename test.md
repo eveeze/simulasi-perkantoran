@@ -7,338 +7,159 @@
 
 ## Akun Demo
 
-| Role      | Email                  | Hak Akses                                     |
-| --------- | ---------------------- | --------------------------------------------- |
-| Admin     | `admin@office.sim`     | Full CRUD employees, approve cuti, semua data |
-| Manager   | `manager@office.sim`   | Approve/reject cuti, lihat semua data         |
-| Secretary | `secretary@office.sim` | Buat dokumen, lihat semua data                |
-| Staff     | `staff@office.sim`     | Hanya data milik sendiri                      |
-| Staff 2   | `staff2@office.sim`    | Hanya data milik sendiri                      |
+| Role         | Email                  | Hak Akses                                                                   |
+| ------------ | ---------------------- | --------------------------------------------------------------------------- |
+| Admin        | `admin@office.sim`     | Full akses CRUD: Karyawan, Keuangan, Laporan, Admin Panel, Registrasi Wajah |
+| Manager      | `manager@office.sim`   | Akses: Approve Cuti, Keuangan, Laporan, Korespondensi                       |
+| Secretary    | `secretary@office.sim` | Akses: Buat Dokumen (Korespondensi), Keuangan, Laporan                      |
+| Staff        | `staff@office.sim`     | Akses Terbatas: Hanya data milik sendiri (Hadir, Cuti)                      |
+| Front Office | `fo@office.sim`        | Akses: Halaman Kehadiran & Dashboard                                        |
 
 ---
 
-## 1. 🔐 Authentication
+## 1. 🔐 Authentication & Layout
 
 ### 1.1 Login Page (`/login`)
 
-- [ ] Buka `/login` → halaman login tampil dengan split layout
+- [ ] Buka `/login` → form login tampil dengan split layout
 - [ ] Klik tombol demo "Admin" → email & password auto-fill
 - [ ] Klik "Masuk" → redirect ke `/dashboard`
-- [ ] Coba login dengan email/password salah → muncul error merah
-- [ ] Coba submit form kosong → validasi HTML mencegah submit
-- [ ] Ulangi untuk setiap role (Manager, Secretary, Staff)
+- [ ] Coba login gagal (email/password salah) → "Invalid credentials"
+- [ ] Ulangi login dengan Manager, Secretary, Staff, FO
 
-### 1.2 Logout
+### 1.2 Sidebar Menu Berdasarkan Role
 
-- [ ] Setelah login, klik Logout di sidebar → kembali ke `/login`
-- [ ] Setelah logout, akses `/dashboard` → redirect ke `/login`
-
-### 1.3 Session / Auth Guard
-
-- [ ] Akses `/dashboard` tanpa login → redirect ke `/login`
-- [ ] Login → refresh halaman → tetap login (cookie persists)
+- [ ] **Admin**: Tampil semua menu (Dashboard, Kehadiran, Cuti, Karyawan, Registrasi Wajah, Korespondensi, Kearsipan, Pendapatan, Pengeluaran, Hutang, Laporan, Panel Admin)
+- [ ] **Staff / Front Office**: Tidak tampil menu Keuangan, Korespondensi, Laporan, Admin, atau Karyawan
 
 ---
 
 ## 2. 📊 Dashboard Utama (`/dashboard`)
 
-- [ ] Setelah login, dashboard tampil dengan data summary
-- [ ] Tampil statistik: total karyawan, kehadiran hari ini, cuti pending, total dokumen
-- [ ] Tampil tabel kehadiran terbaru
-- [ ] Tampil tabel pengajuan cuti terbaru
-- [ ] Data sesuai dengan role (Staff hanya lihat data sendiri)
+- [ ] Tampil _greeting_ nama user dan role
+- [ ] Tampil 4 kartu statistik: Total Karyawan, Hadir, Terlambat, Cuti Pending
+- [ ] Menampilkan List Kehadiran Terkini dan Pengajuan Cuti Pending
+- [ ] Data difilter sesuai role (Staff hanya melihat miliknya sendiri)
 
 ---
 
-## 3. 👥 Manajemen Karyawan (`/dashboard/employees`)
+## 3. 👥 Karyawan & Biometrik (Admin Only)
 
-### 3.1 Daftar Karyawan
+### 3.1 Manajemen Karyawan (`/dashboard/employees`)
 
-- [ ] Login sebagai **Admin** → navigasi ke halaman Karyawan
-- [ ] Tabel karyawan tampil dengan kolom: Nama, Email, Role, Department
-- [ ] Badge role tampil berwarna berbeda (Admin, Manager, Secretary, Staff)
+- [ ] Tampil tabel Karyawan: Nama, Email, Peran, Dept
+- [ ] Form Create Karyawan berfungsi (Role tersedia: ADMIN, MANAGER, SECRETARY, STAFF, FRONT_OFFICE)
+- [ ] Tambah email duplikat → error "Email already exists"
+- [ ] Edit Karyawan & Hapus Karyawan berfungsi
 
-### 3.2 Tambah Karyawan (Admin Only)
+### 3.2 Registrasi Wajah (`/dashboard/face-register`)
 
-- [ ] Klik tombol "Tambah" → modal form muncul
-- [ ] Isi form: nama, email, password, role, department
-- [ ] Submit → karyawan baru muncul di tabel
-- [ ] Coba tambah dengan email duplikat → error "Email already exists"
-
-### 3.3 Edit Karyawan (Admin Only)
-
-- [ ] Klik tombol edit pada karyawan → modal form dengan data terisi
-- [ ] Ubah nama/role/department → submit → data terupdate di tabel
-
-### 3.4 Hapus Karyawan (Admin Only)
-
-- [ ] Klik tombol hapus → konfirmasi → karyawan hilang dari tabel
-
-### 3.5 Akses Control
-
-- [ ] Login sebagai **Staff** → halaman karyawan tidak punya tombol Tambah/Edit/Hapus
-- [ ] Login sebagai **Manager** → tidak bisa tambah/edit/hapus karyawan
+- [ ] Pilih karyawan dari dropdown yang belum didaftarkan wajahnya
+- [ ] Kamera menyala (FaceScanner)
+- [ ] Arahkan wajah ke kamera → Extract descriptor 128-dimensi → submit registrasi "Wajah berhasil didaftarkan"
+- [ ] Cek status badge pada dropdown berubah menjadi "✓ Terdaftar"
 
 ---
 
-## 4. ✅ Kehadiran / Attendance (`/dashboard/attendance`)
+## 4. ✅ Kehadiran (`/dashboard/attendance`)
 
-### 4.1 Daftar Kehadiran
-
-- [ ] Halaman menampilkan tabel riwayat kehadiran
-- [ ] Kolom: (Karyawan jika Admin/Manager), Tanggal, Check In, Check Out, Status
-- [ ] Summary cards: Total Record, Hadir, Terlambat
-- [ ] Login sebagai **Staff** → hanya lihat data kehadiran sendiri (kolom Karyawan hidden)
-- [ ] Login sebagai **Admin/Manager** → lihat semua karyawan
-
-### 4.2 Check-in/Check-out (via Front Office)
-
-- [ ] Lihat bagian **Front Office** di bawah
+- [ ] Tabel Kehadiran lengkap (Admin/Manager: semua karyawan, Staff: diri sendiri)
+- [ ] API Check-in/Check-out berfungsi mengirim action type
+- [ ] Tampil summary cards akurat (Hadir, Terlambat, Total)
 
 ---
 
 ## 5. 🏖️ Manajemen Cuti (`/dashboard/leave`)
 
-### 5.1 Daftar Cuti
-
-- [ ] Tabel cuti tampil: Karyawan, Periode, Alasan, Status
-- [ ] Badge status berwarna: Menunggu (kuning), Disetujui (hijau), Ditolak (merah)
-
-### 5.2 Ajukan Cuti (Semua Role)
-
-- [ ] Klik "Ajukan Cuti" → modal form muncul
-- [ ] Isi: Tanggal Mulai, Tanggal Selesai, Alasan
-- [ ] Submit → cuti baru muncul di tabel dengan status "Menunggu"
-
-### 5.3 Approve/Reject Cuti (Admin & Manager Only)
-
-- [ ] Login sebagai **Admin** atau **Manager**
-- [ ] Pada cuti status "Menunggu", tampil tombol "Setuju" dan "Tolak"
-- [ ] Klik "Setuju" → status berubah ke "Disetujui"
-- [ ] Klik "Tolak" pada cuti lain → status berubah ke "Ditolak"
-
-### 5.4 Akses Control
-
-- [ ] Login sebagai **Staff** → tidak ada tombol Setuju/Tolak
-- [ ] Staff hanya bisa lihat cuti milik sendiri
+- [ ] Staff & semua user dapat mengajukan cuti (PENDING)
+- [ ] Admin & Manager dapat klik Setuju (APPROVED) atau Tolak (REJECTED)
+- [ ] Badge status diperbarui secara _real-time_
 
 ---
 
-## 6. 📄 Surat Menyurat / Correspondence (`/dashboard/correspondence`)
+## 6. 📄 Korespondensi & Arsip
 
-### 6.1 Daftar Dokumen
-
-- [ ] Tabel dokumen tampil: Judul, Kategori, Pembuat, Tanggal
-- [ ] Filter berdasarkan kategori (INCOMING, OUTGOING, MEMO, REPORT)
-- [ ] Badge kategori berwarna berbeda
-
-### 6.2 Buat Dokumen Baru
-
-- [ ] Klik tombol tambah → modal form muncul
-- [ ] Isi: Judul, Konten, Kategori
-- [ ] Submit → dokumen baru muncul di tabel
-
-### 6.3 Tanda Tangani Dokumen
-
-- [ ] Klik tombol "Tanda Tangani" pada dokumen → dokumen ditandai sudah ditandatangani
+- [ ] **Korespondensi (`/dashboard/correspondence`)**: Buat surat baru (INCOMING, OUTGOING, MEMO, REPORT)
+- [ ] Tombol Tanda Tangan berfungsi (Admin/Secretary)
+- [ ] **Arsip (`/dashboard/archive`)**: Mengarsipkan dokumen, memfilter berdasarkan kategori
 
 ---
 
-## 7. 🗂️ Arsip Dokumen (`/dashboard/archive`)
+## 7. 💰 Manajemen Keuangan (Admin, Manager, Secretary)
 
-### 7.1 Daftar Arsip
+### 7.1 Pendapatan (`/dashboard/revenue`)
 
-- [ ] Tabel arsip tampil mirip dengan surat menyurat
-- [ ] Filter berdasarkan kategori
+- [ ] Tabel pendapatan beserta kartu summary "Total Pendapatan" & "Pendapatan Bulan Ini"
+- [ ] Tambah Pendapatan: Judul, Jumlah, Sumber, Tanggal
+- [ ] Edit & Hapus Pendapatan berfungsi
 
-### 7.2 Tambah Arsip
+### 7.2 Pengeluaran (`/dashboard/expenses`)
 
-- [ ] Klik tombol tambah → modal form → submit → arsip baru muncul
+- [ ] Tabel pengeluaran lengkap dengan diagram/pengelompokan berdasarkan Kategori (OPERASIONAL, GAJI, UTILITAS, TRANSPORTASI, dsb.)
+- [ ] Form Tambah: Judul, Kategori, Jumlah, Tanggal
+- [ ] Edit & Hapus Pengeluaran berfungsi
 
-### 7.3 Hapus Arsip
+### 7.3 Hutang Piutang (`/dashboard/debts`)
 
-- [ ] Klik tombol hapus → dokumen hilang dari tabel
-
----
-
-## 8. 🏢 Front Office (`/frontoffice`)
-
-### 8.1 Halaman Front Office
-
-- [ ] Buka `/frontoffice` → tampil halaman face recognition
-- [ ] Kamera menyala (minta izin browser)
-- [ ] FaceScanner component ter-load
-
-### 8.2 Face Check-in
-
-- [ ] Scan wajah yang sudah terdaftar → muncul nama karyawan + "Check-in berhasil"
-- [ ] Status attendance tercatat di database
-
-### 8.3 Face Check-out
-
-- [ ] Scan wajah lagi (hari yang sama) → "Check-out berhasil"
-
-### 8.4 Face Not Recognized
-
-- [ ] Scan wajah yang belum didaftarkan → "Wajah tidak dikenali"
-
-> **Note:** Fitur face recognition membutuhkan webcam dan face.api.js models
+- [ ] Tabel hutang dengan tracking status (UNPAID, PARTIAL, PAID) dan badge Overdue merah
+- [ ] Summary total hutang, total dibayar, dan hutang menunggak (unpaid)
+- [ ] Form Tambah Hutang (Nama Debitur, Kreditur, Jumlah, Jatuh Tempo)
+- [ ] Tombol Update Bayar untuk mencicil hutang secara parsial (`paidAmount`) -> status bisa berubah ke PARTIAL/PAID otomatis tergantung saldo
 
 ---
 
-## 9. 🧭 Navigation & Sidebar
+## 8. 📈 Analitik & Laporan (Admin, Manager, Secretary)
 
-- [ ] Sidebar menampilkan menu sesuai navigasi
-- [ ] Klik setiap menu → navigasi ke halaman yang benar
-- [ ] Highlight aktif pada menu yang sedang dikunjungi
-- [ ] Responsive pada mobile (jika ada)
+### 8.1 Laporan Berkala (`/dashboard/reports`)
 
----
+- [ ] Widget _Financial Summary_ tampil otomatis (menghitung Omset, Pengeluaran, Laba/Profit bulan ini, & Tanggungan)
+- [ ] Tabel Laporan Kinerja/Khusus list (Form: Tipe Laporan, Periode, Ringkasan)
+- [ ] Tambah Laporan baru (Manual)
 
-## 10. 🌐 Landing Page (`/`)
+### 8.2 Panel Admin (`/dashboard/admin`) _— Admin Only_
 
-- [ ] Buka `/` → tampil halaman utama
-- [ ] Ada link/tombol ke Login dan Front Office
-
----
-
-## 11. 🛡️ API Endpoint Testing (Manual via curl/Postman)
-
-### 11.1 Auth
-
-```bash
-# Login
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@office.sim","password":"password123"}'
-# → Expect: { token, employee }
-
-# Get Profile (pakai token dari login)
-curl http://localhost:3000/api/auth/me \
-  -H "Cookie: token=<TOKEN>"
-# → Expect: employee data
-
-# Logout
-curl -X POST http://localhost:3000/api/auth/logout
-# → Expect: { message: "Logged out" }
-```
-
-### 11.2 Employees
-
-```bash
-# List semua karyawan
-curl http://localhost:3000/api/employees
-
-# Detail karyawan
-curl http://localhost:3000/api/employees/<ID>
-
-# Tambah karyawan (Admin)
-curl -X POST http://localhost:3000/api/employees \
-  -H "Content-Type: application/json" \
-  -H "Cookie: token=<ADMIN_TOKEN>" \
-  -d '{"name":"Test User","email":"test@office.sim","password":"test123","role":"STAFF"}'
-
-# Update karyawan (Admin)
-curl -X PUT http://localhost:3000/api/employees/<ID> \
-  -H "Content-Type: application/json" \
-  -H "Cookie: token=<ADMIN_TOKEN>" \
-  -d '{"name":"Updated Name"}'
-
-# Hapus karyawan (Admin)
-curl -X DELETE http://localhost:3000/api/employees/<ID> \
-  -H "Cookie: token=<ADMIN_TOKEN>"
-```
-
-### 11.3 Attendance
-
-```bash
-# List kehadiran
-curl http://localhost:3000/api/attendance \
-  -H "Cookie: token=<TOKEN>"
-
-# Check-in/Check-out (via face verify → lalu hit check)
-curl -X POST http://localhost:3000/api/attendance/check \
-  -H "Content-Type: application/json" \
-  -d '{"employeeId":"<EMPLOYEE_ID>"}'
-```
-
-### 11.4 Leave
-
-```bash
-# List cuti
-curl http://localhost:3000/api/leave \
-  -H "Cookie: token=<TOKEN>"
-
-# Ajukan cuti
-curl -X POST http://localhost:3000/api/leave \
-  -H "Content-Type: application/json" \
-  -H "Cookie: token=<TOKEN>" \
-  -d '{"startDate":"2026-03-01","endDate":"2026-03-03","reason":"Liburan"}'
-
-# Approve/reject cuti (Admin/Manager)
-curl -X PATCH http://localhost:3000/api/leave/<ID> \
-  -H "Content-Type: application/json" \
-  -H "Cookie: token=<ADMIN_TOKEN>" \
-  -d '{"status":"APPROVED"}'
-```
-
-### 11.5 Documents
-
-```bash
-# List dokumen
-curl http://localhost:3000/api/documents
-
-# Buat dokumen
-curl -X POST http://localhost:3000/api/documents \
-  -H "Content-Type: application/json" \
-  -H "Cookie: token=<TOKEN>" \
-  -d '{"title":"Test Doc","content":"Test content","category":"MEMO"}'
-
-# Update dokumen (tanda tangan)
-curl -X PUT http://localhost:3000/api/documents/<ID> \
-  -H "Content-Type: application/json" \
-  -H "Cookie: token=<TOKEN>" \
-  -d '{"signed":true}'
-
-# Hapus dokumen
-curl -X DELETE http://localhost:3000/api/documents/<ID> \
-  -H "Cookie: token=<TOKEN>"
-```
-
-### 11.6 Departments
-
-```bash
-# List departments
-curl http://localhost:3000/api/departments
-```
-
-### 11.7 Face Recognition
-
-```bash
-# Register face (128-dimensional float array)
-curl -X POST http://localhost:3000/api/face/register \
-  -H "Content-Type: application/json" \
-  -d '{"employeeId":"<ID>","descriptor":[0.1,0.2,...128 values]}'
-
-# Verify face
-curl -X POST http://localhost:3000/api/face/verify \
-  -H "Content-Type: application/json" \
-  -d '{"descriptor":[0.1,0.2,...128 values]}'
-```
+- [ ] Halaman ringkasan terpusat khusus untuk Top Management
+- [ ] Statistik Overview (Total Dept, Karyawan, Dokumen)
+- [ ] Statistik Finansial Cepat (Laba/Rugi/Hutang)
+- [ ] Tampilan Widget Aktivitas Terkini (Recent Documents, Recent Revenues, Recent Expenses)
 
 ---
 
-## 12. ⚠️ Edge Cases & Error Handling
+## 9. 🏢 Front Office (`/frontoffice`)
 
-- [ ] Login dengan email tidak terdaftar → "Invalid credentials"
-- [ ] Login dengan password salah → "Invalid credentials"
-- [ ] Akses API tanpa token → 401 Unauthorized
-- [ ] Staff akses employee CRUD API → 403 Forbidden
-- [ ] Update/delete ID yang tidak ada → 404 Not Found
-- [ ] Tambah employee email duplikat → 409 Conflict
-- [ ] Face descriptor bukan 128 dimensi → 400 Bad Request
-- [ ] Check-in dua kali dalam sehari → response "COMPLETED"
-- [ ] Leave PATCH dengan status selain APPROVED/REJECTED → 400
+- [ ] Halaman scanner Biometrik `face-api.js` (Webcam harus menyala)
+- [ ] Fitur Check-In Otomatis: Wajah terdeteksi -> API `/api/face/verify` -> Presensi "CHECK_IN" tersimpan
+- [ ] Fitur Check-Out Otomatis (Arahkan wajah yang sama di hari yang sama)
+- [ ] Gagal verifikasi menampilkan "Wajah tidak dikenal"
+
+---
+
+## 10. 🛡️ API Endpoints Testing (Cheatsheet curl/Tools)
+
+| Method              | Endpoint             | Auth | Role          | Deskripsi                                      |
+| ------------------- | -------------------- | ---- | ------------- | ---------------------------------------------- |
+| POST                | `/api/auth/login`    | ❌   | All           | Mendapat token JWT (Cookie HTTP-Only & Body)   |
+| GET                 | `/api/auth/me`       | ✅   | All           | Mendapat data sesi user saat ini               |
+| GET/POST/PUT/DELETE | `/api/employees/:id` | ✅   | Admin         | CRUD Karyawan                                  |
+| GET/POST/PUT/DELETE | `/api/revenue/:id`   | ✅   | Admin/Mgr/Sec | Pencatatan Dana Masuk                          |
+| GET/POST/PUT/DELETE | `/api/expenses/:id`  | ✅   | Admin/Mgr/Sec | Pencatatan Dana Keluar                         |
+| GET/POST/PUT/DELETE | `/api/debts/:id`     | ✅   | Admin/Mgr/Sec | Pengelolaan Hutang/Kredit                      |
+| PATCH               | `/api/debts/:id`     | ✅   | Admin/Mgr/Sec | Quick Update Cicilan / Payment Hutang          |
+| GET/POST/PUT/DELETE | `/api/reports/:id`   | ✅   | Admin/Mgr/Sec | Dokumentasi Laporan (Harian-Tahunan)           |
+| GET                 | `/api/admin`         | ✅   | Admin         | Agregasi dashboard khusus Administrator        |
+| POST                | `/api/upload`        | ✅   | All           | Multiform File Upload ke Cloudinary (max 10MB) |
+| POST                | `/api/face/register` | ✅   | Admin         | Register Face Descriptor 128-dimensi           |
+| POST                | `/api/face/verify`   | ❌   | FO            | Verifikasi dan auto-presensi Kehadiran         |
+
+---
+
+## 11. ⚠️ Edge Cases & Security (WAJIB DITEST)
+
+- [ ] Akses API Admin/Revenue dengan header Authorization `Bearer <token-staff>` → WAJIB **403 Forbidden**
+- [ ] Akses routing frontend seperti `/dashboard/admin` atau `/dashboard/face-register` dengan akun Staff → Tampil komponen UI **Akses Ditolak**
+- [ ] API Upload `/api/upload` tanpa token → **401 Unauthorized**
+- [ ] API Upload dengan file di atas 10MB → **400 File too large**
+- [ ] Scan `/frontoffice` tanpa data biometrik yang sesuai → Ditolak sistem (akurasi `euclidean distance`)
 
 ---
 
@@ -346,145 +167,47 @@ curl -X POST http://localhost:3000/api/face/verify \
 
 # 🤖 PROMPT AI TESTING — Copy & Paste ke AI (Kombai/dll)
 
-> Copy seluruh prompt di bawah ini dan paste ke AI testing tool.
+> Copy seluruh prompt di bawah ini lalu tempel ke AI Testing tool / QA bot.
 
----
+\`\`\`markdown
+Kamu adalah QA tester yang akan melakukan E2E testing dan API testing pada aplikasi "SimKantor" versi terbaru.
 
-```
-Kamu adalah QA tester untuk aplikasi web "SimKantor" — Digital Office Simulation platform.
+APP URL: http://localhost:3000
 
-## Informasi Aplikasi
-- URL: http://localhost:3000
-- Tech: Next.js 16, Prisma 7, Neon PostgreSQL, Face API
-- Auth: JWT via httpOnly cookie
+## PEMBARUAN VERSI BARU
 
-## Akun Demo (password semua: password123)
-- Admin: admin@office.sim (full access, CRUD karyawan, approve cuti)
-- Manager: manager@office.sim (approve/reject cuti, lihat semua data)
-- Secretary: secretary@office.sim (buat dokumen, lihat semua data)
-- Staff: staff@office.sim (hanya data sendiri, tidak bisa CRUD karyawan)
+Selain modul utama (Auth, Kehadiran, Cuti, Karyawan, Dokumen), aplikasi sekarang dilengkapi 6 MODUL BARU yang membutuhkan validasi ketat:
 
-## Halaman yang Harus Ditest
+1. PENDAPATAN (/api/revenue & /dashboard/revenue)
+2. PENGELUARAN (/api/expenses & /dashboard/expenses)
+3. HUTANG (/api/debts & /dashboard/debts) - termasuk sistem pembayaran parsial (PATCH)
+4. LAPORAN & KALKULASI (/api/reports & /dashboard/reports)
+5. PANEL ADMIN (/api/admin & /dashboard/admin)
+6. REGISTRASI WAJAH (/api/face/register & /dashboard/face-register)
+7. CLOUDINARY FILE UPLOAD (/api/upload)
 
-### 1. Landing Page (/)
-- Pastikan halaman utama tampil tanpa error
-- Ada navigasi ke Login dan Front Office
+## RULES VALIDASI:
 
-### 2. Login Page (/login)
-- Test login dengan setiap akun demo (Admin, Manager, Secretary, Staff)
-- Test login gagal (email salah, password salah, form kosong)
-- Pastikan setelah login redirect ke /dashboard
-- Test tombol demo account auto-fill email & password
-- Test logout → kembali ke /login
-- Test auth guard: akses /dashboard tanpa login → redirect /login
+- Role 'Admin' punya full akses ke SEMUA modul. (Email: admin@office.sim / Pass: password123)
+- Role 'Manager' dan 'Secretary' bisa mengelola Keuangan & Laporan, tetapi TIDAK BISA mengakses Panel Admin dan Manajemen Karyawan/Registrasi Wajah.
+- Role 'Staff' dan 'Front Office' TERLARANG mengakses Keuangan, Laporan, Admin, dan Karyawan, baik di sisi UI Frontend (Akses Ditolak) maupun di API Backend (403 Forbidden).
 
-### 3. Dashboard (/dashboard)
-- Login sebagai Admin → pastikan menampilkan:
-  - Statistik summary (total karyawan, kehadiran hari ini, cuti pending, dokumen)
-  - Tabel kehadiran terbaru
-  - Tabel cuti terbaru
-- Login sebagai Staff → pastikan hanya data milik sendiri
+## TESTING WORKFLOW (Harap eksekusi):
 
-### 4. Karyawan (/dashboard/employees)
-- Login Admin:
-  - Tabel karyawan tampil semua data
-  - Test Create: tambah karyawan baru → muncul di tabel
-  - Test Create duplicate email → error
-  - Test Edit: ubah nama/role → data terupdate
-  - Test Delete: hapus karyawan → hilang dari tabel
-- Login Staff/Manager:
-  - Tombol Create/Edit/Delete TIDAK boleh muncul
-  - API POST/PUT/DELETE harus return 403
+1. **Financial CRUD Flow:**
+   - Login admin, buat 1 Pendapatan (Rp100.000), 1 Pengeluaran Operasional (Rp50.000), 1 Hutang (Rp200.000).
+   - Pastikan API endpoint membalikkan HTTP 201 Created.
+   - Panggil GET /api/reports dan pastikan `financialSummary.profit` adalah Rp50.000 (100k - 50k), dan `financialSummary.outstandingDebt` adalah Rp200.000.
+2. **Debt Payment Flow:**
+   - Panggil PATCH /api/debts/<id> dengan `paidAmount: 50.000` dan `status: PARTIAL`.
+   - Konfirmasi HTTP 200, GET ulang pastikan outstanding debt berkurang dari 200rb menjadi 150rb.
+3. **Admin Exclusivity Flow:**
+   - Login menggunakan staff@office.sim / password123
+   - Lakukan GET /api/admin -> Jika 403 Forbidden = PASS.
+   - Lakukan POST /api/revenue -> Jika 403 Forbidden = PASS.
+4. **Biometric Edge Case Flow:**
+   - Login Admin, coba POST /api/face/register tanpa ID Karyawan -> Jika 400 = PASS.
+   - Modul "/frontoffice" hanya butuh izin kamera.
 
-### 5. Kehadiran (/dashboard/attendance)
-- Login Admin/Manager → lihat semua data kehadiran
-- Login Staff → hanya data sendiri, kolom "Karyawan" hidden
-- Summary cards: Total Record, Hadir, Terlambat harus akurat
-
-### 6. Cuti (/dashboard/leave)
-- Test ajukan cuti (semua role bisa):
-  - Klik "Ajukan Cuti" → isi form → submit → muncul status "Menunggu"
-- Test approve/reject (Admin & Manager only):
-  - Tombol "Setuju"/"Tolak" muncul pada cuti PENDING
-  - Klik Setuju → status jadi "Disetujui"
-  - Klik Tolak → status jadi "Ditolak"
-- Login Staff → TIDAK ada tombol Setuju/Tolak
-- Staff hanya lihat cuti miliknya sendiri
-
-### 7. Surat Menyurat (/dashboard/correspondence)
-- Tabel dokumen tampil dengan kategori badge berwarna
-- Test filter by kategori (INCOMING, OUTGOING, MEMO, REPORT)
-- Test buat dokumen baru
-- Test tanda tangan dokumen
-
-### 8. Arsip (/dashboard/archive)
-- Tampil daftar arsip dokumen
-- Test tambah arsip baru
-- Test hapus arsip
-
-### 9. Front Office (/frontoffice)
-- Halaman tampil dengan face scanner
-- Kamera menyala (perlu izin browser)
-- Scan wajah terdaftar → check-in, scan lagi → check-out
-- Scan wajah tidak dikenal → "Wajah tidak dikenali"
-
-### 10. Sidebar/Navigation
-- Semua menu navigasi berfungsi
-- Menu aktif di-highlight
-- Logout berfungsi dari sidebar
-
-## API Endpoints yang Harus Ditest
-Test setiap endpoint dengan browser dev tools Network tab atau curl:
-
-| Method | Endpoint | Auth? | Role | Deskripsi |
-|--------|----------|-------|------|-----------|
-| POST | /api/auth/login | ❌ | All | Login → return token + employee |
-| POST | /api/auth/logout | ❌ | All | Logout → clear cookie |
-| GET | /api/auth/me | ✅ | All | Get profil employee |
-| GET | /api/employees | ❌ | All | List semua karyawan |
-| GET | /api/employees/:id | ❌ | All | Detail karyawan |
-| POST | /api/employees | ✅ | Admin | Tambah karyawan |
-| PUT | /api/employees/:id | ✅ | Admin | Update karyawan |
-| DELETE | /api/employees/:id | ✅ | Admin | Hapus karyawan |
-| GET | /api/attendance | ✅ | All | List kehadiran (staff=own) |
-| POST | /api/attendance/check | ❌ | — | Check-in/check-out by employee ID |
-| GET | /api/leave | ✅ | All | List cuti (staff=own) |
-| POST | /api/leave | ✅ | All | Ajukan cuti |
-| PATCH | /api/leave/:id | ✅ | Admin/Manager | Approve/reject cuti |
-| GET | /api/documents | ❌ | All | List dokumen |
-| POST | /api/documents | ✅ | All | Buat dokumen |
-| GET | /api/documents/:id | ❌ | All | Detail dokumen |
-| PUT | /api/documents/:id | ✅ | All | Update/tanda tangan |
-| DELETE | /api/documents/:id | ✅ | All | Hapus dokumen |
-| GET | /api/departments | ❌ | All | List departemen |
-| POST | /api/face/register | ❌ | — | Daftar wajah (128-dim array) |
-| POST | /api/face/verify | ❌ | — | Verifikasi wajah |
-
-## Error Cases yang WAJIB Ditest
-1. Login email/password salah → 401 "Invalid credentials"
-2. Akses protected API tanpa token → 401 "Unauthorized"
-3. Staff hit POST/PUT/DELETE /api/employees → 403 "Unauthorized"
-4. Staff hit PATCH /api/leave/:id → 403 "Unauthorized"
-5. GET/PUT/DELETE resource yang tidak ada → 404 "Not found"
-6. POST employee email yang sudah ada → 409 "Email already exists"
-7. PATCH leave status bukan APPROVED/REJECTED → 400
-8. Face descriptor bukan array 128 elemen → 400
-9. Check-in 2x sehari → response action "COMPLETED"
-10. Form validation: submit tanpa required fields
-
-## Checklist Output
-Untuk setiap test, report hasilnya dalam format:
-- ✅ PASS: [nama test] — berjalan sesuai ekspektasi
-- ❌ FAIL: [nama test] — [detail masalah yang ditemukan]
-- ⚠️ SKIP: [nama test] — [alasan skip, misalnya butuh webcam]
-
-Laporkan summary di akhir:
-- Total tests: X
-- Passed: X
-- Failed: X
-- Skipped: X
-```
-
----
-
-> **Catatan:** Untuk test face recognition secara programmatic, kamu perlu face-api.js models yang berjalan di browser. Test via `/frontoffice` lebih praktis daripada curl.
+Jalankan test tersebut dan berikan tabel "TEST REPORT SUMMARY" berupa Total Test, Passed, Failed berdasarkan observasimu secara programatis.
+\`\`\`

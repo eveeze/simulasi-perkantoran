@@ -34,6 +34,37 @@ enum DocumentCategory {
   REPORT
 }
 
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ExpenseCategory {
+  OPERASIONAL
+  GAJI
+  UTILITAS
+  TRANSPORTASI
+  PERLENGKAPAN
+  PEMELIHARAAN
+  LAINNYA
+}
+
+enum DebtStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum ReportType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  ANNUAL
+  CUSTOM
+}
+
 model Department {
   id        String     @id @default(cuid())
   name      String     @unique
@@ -59,6 +90,10 @@ model Employee {
   leaveRequests  LeaveRequest[] @relation("EmployeeLeaves")
   approvedLeaves LeaveRequest[] @relation("LeaveApprover")
   documents      Document[]
+  revenues       Revenue[]
+  expenses       Expense[]
+  debts          Debt[]
+  reports        Report[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -92,14 +127,90 @@ model LeaveRequest {
 }
 
 model Document {
-  id        String           @id @default(cuid())
-  creatorId String
-  creator   Employee         @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  title     String
-  content   String?
-  category  DocumentCategory @default(INCOMING)
-  fileUrl   String?
-  signedAt  DateTime?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id            String               @id @default(cuid())
+  creatorId     String
+  creator       Employee             @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  title         String
+  content       String?
+  category      DocumentCategory     @default(INCOMING)
+  letterNumber  String?
+  senderName    String?
+  recipientName String?
+  priority      Priority             @default(MEDIUM)
+  disposition   String?
+  fileUrl       String?
+  signedAt      DateTime?
+  attachments   DocumentAttachment[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+}
+
+model DocumentAttachment {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  fileName   String
+  fileUrl    String
+  fileType   String?
+  fileSize   Int?
+  publicId   String?
+  createdAt  DateTime @default(now())
+}
+
+model Revenue {
+  id            String   @id @default(cuid())
+  title         String
+  amount        Float
+  source        String
+  date          DateTime @db.Date
+  description   String?
+  attachmentUrl String?
+  createdById   String
+  createdBy     Employee @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Expense {
+  id            String          @id @default(cuid())
+  title         String
+  amount        Float
+  category      ExpenseCategory @default(OPERASIONAL)
+  date          DateTime        @db.Date
+  description   String?
+  attachmentUrl String?
+  createdById   String
+  createdBy     Employee        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Debt {
+  id            String     @id @default(cuid())
+  debtorName    String
+  creditorName  String
+  amount        Float
+  paidAmount    Float      @default(0)
+  dueDate       DateTime   @db.Date
+  status        DebtStatus @default(UNPAID)
+  description   String?
+  attachmentUrl String?
+  createdById   String
+  createdBy     Employee   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Report {
+  id            String     @id @default(cuid())
+  title         String
+  type          ReportType @default(MONTHLY)
+  period        String?
+  content       String?
+  summary       String?
+  attachmentUrl String?
+  createdById   String
+  createdBy     Employee   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }

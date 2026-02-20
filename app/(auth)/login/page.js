@@ -29,11 +29,11 @@ export default function LoginPage() {
   }
 
   const demoAccounts = [
-    { label: 'Admin', email: 'admin@office.sim' },
-    { label: 'Manager', email: 'manager@office.sim' },
-    { label: 'Secretary', email: 'secretary@office.sim' },
-    { label: 'Staff', email: 'staff@office.sim' },
-    { label: 'Front Office', email: 'frontoffice@office.sim' },
+    { label: 'Admin', email: 'admin@simkantor.id' },
+    { label: 'Manager', email: 'manager@simkantor.id' },
+    { label: 'Secretary', email: 'secretary@simkantor.id' },
+    { label: 'Staff', email: 'staff@simkantor.id' },
+    { label: 'Front Office', email: 'frontoffice@simkantor.id' },
   ];
 
   return (

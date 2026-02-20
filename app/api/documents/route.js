@@ -7,13 +7,17 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const search = searchParams.get('search');
+    const priority = searchParams.get('priority');
 
     const where = {};
     if (category) where.category = category;
+    if (priority) where.priority = priority;
     if (search) {
       where.OR = [
         { title: { contains: search, mode: 'insensitive' } },
         { content: { contains: search, mode: 'insensitive' } },
+        { letterNumber: { contains: search, mode: 'insensitive' } },
+        { senderName: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -23,6 +27,7 @@ export async function GET(request) {
         creator: {
           select: { id: true, name: true, role: true },
         },
+        attachments: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -44,7 +49,17 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, content, category, fileUrl } = await request.json();
+    const {
+      title,
+      content,
+      category,
+      letterNumber,
+      senderName,
+      recipientName,
+      priority,
+      fileUrl,
+      attachments,
+    } = await request.json();
 
     if (!title) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
@@ -56,12 +71,29 @@ export async function POST(request) {
         title,
         content: content || '',
         category: category || 'INCOMING',
+        letterNumber: letterNumber || null,
+        senderName: senderName || null,
+        recipientName: recipientName || null,
+        priority: priority || 'MEDIUM',
         fileUrl: fileUrl || null,
+        ...(attachments &&
+          attachments.length > 0 && {
+            attachments: {
+              create: attachments.map((att) => ({
+                fileName: att.fileName,
+                fileUrl: att.fileUrl,
+                fileType: att.fileType || null,
+                fileSize: att.fileSize || null,
+                publicId: att.publicId || null,
+              })),
+            },
+          }),
       },
       include: {
         creator: {
           select: { id: true, name: true },
         },
+        attachments: true,
       },
     });
 
